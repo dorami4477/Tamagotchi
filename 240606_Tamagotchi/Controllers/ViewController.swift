@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
     let collectionView: UICollectionView = {
         let flowLayout = UICollectionViewFlowLayout()
@@ -26,7 +26,8 @@ class ViewController: UIViewController {
         return cv
     }()
     
-    let datas = DataManager.shared.getTamaList()
+    private let dataMagnager = DataManager.shared
+    private var datas:[TamagotchiModel] = []
     
     // MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -35,26 +36,24 @@ class ViewController: UIViewController {
         configureLayout()
         configureUI()
         configureDelegate()
+        datas = dataMagnager.getTamaList()
     }
+
     
-    override func viewWillAppear(_ animated: Bool) {
-        collectionView.reloadData()
-    }
-    
-    func configureHierarchy(){
+    private func configureHierarchy(){
         view.addSubview(collectionView)
     }
-    func configureLayout(){
+    private func configureLayout(){
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
-    func configureUI(){
-        view.backgroundColor = Colors.backgroud
+    private func configureUI(){
+        view.backgroundColor = Colors.background
         title = "다마고치 선택하기"
         collectionView.backgroundColor = .clear
     }
-    func configureDelegate(){
+    private func configureDelegate(){
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.identifier)
@@ -74,10 +73,19 @@ extension ViewController:UICollectionViewDelegate, UICollectionViewDataSource{
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = DatailPopViewController()
-        vc.data = datas[indexPath.row]
-        vc.modalPresentationStyle = .overCurrentContext
-        present(vc, animated: true)
+        if dataMagnager.getTamaList()[indexPath.row].type == .notReady{
+            //준비중인 다마고치를 고른다면
+            let alert = UIAlertController(title: "준비 중", message: "다마고치가 준비 중입니다.\n다른 다마고치를 골라주세요.", preferredStyle: .alert)
+            let confirm = UIAlertAction(title: "확인", style: .default)
+            alert.addAction(confirm)
+            present(alert, animated: true)
+            
+        }else{
+            let vc = DatailPopViewController()
+            vc.data = datas[indexPath.row]
+            vc.modalPresentationStyle = .overCurrentContext
+            present(vc, animated: true)
+        }
     }
     
 }

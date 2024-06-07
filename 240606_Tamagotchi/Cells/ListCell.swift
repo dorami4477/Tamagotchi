@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SnapKit
 
-class ListCell: UICollectionViewCell {
+final class ListCell: UICollectionViewCell {
 
     
     var mainImageView = {

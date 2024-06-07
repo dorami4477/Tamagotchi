@@ -15,20 +15,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
-        /*let setData = UserDefaults.standard.integer(forKey: UserDefault.selectedTama)
-        if setData == 0 {
-            print(setData)
-            let naviVC = UINavigationController(rootViewController: ViewController())
-            window?.rootViewController = naviVC
-        }else if setData == 1{
-            let naviVC = UINavigationController(rootViewController: MainViewController())
-            window?.rootViewController = naviVC
-        }*/
+        
         let naviVC = UINavigationController(rootViewController: ViewController())
         window?.rootViewController = naviVC
         window?.makeKeyAndVisible()
     }
-
+    //루트뷰 전환
+    func changeRootVC(_ vc:UIViewController, animated: Bool) {
+        guard let window = self.window else { return }
+        window.rootViewController = vc
+        UIView.transition(with: window, duration: 0.2, options: [.transitionCrossDissolve], animations: nil, completion: nil)
+      }
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

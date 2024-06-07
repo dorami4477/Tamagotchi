@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SnapKit
 
-class SettingCell: UITableViewCell {
+final class SettingCell: UITableViewCell {
     
     let iconImageView = {
         let img = UIImageView()
@@ -51,7 +52,7 @@ class SettingCell: UITableViewCell {
         iconImageView.snp.makeConstraints { make in
             make.verticalEdges.equalToSuperview().inset(12)
             make.leading.equalToSuperview().offset(20)
-            make.width.equalTo(iconImageView.snp.height)
+            make.width.equalTo(iconImageView.snp.height).offset(-2)
         }
         titleLabel.snp.makeConstraints { make in
             make.verticalEdges.equalToSuperview().inset(12)

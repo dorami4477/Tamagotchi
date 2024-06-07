@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SnapKit
 
-class MainViewController: UIViewController {
+final class MainViewController: UIViewController {
 
     let bubbleBackView = {
         let view = UIView()
@@ -28,38 +29,41 @@ class MainViewController: UIViewController {
         label.text = "오늘은 왠지 기분이 좋아요"
         return label
     }()
-    var mainImageView = {
+    let mainImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
         return img
     }()
-    var nameLabel = {
+    let nameLabel = {
         let label = PaddingLabel()
         label.font = .boldSystemFont(ofSize: 14)
         label.textAlignment = .center
         label.textColor = Colors.text
         label.layer.borderColor = Colors.text.cgColor
-        label.backgroundColor = Colors.backgroud
+        label.backgroundColor = Colors.background
         label.layer.borderWidth = 1
         label.layer.cornerRadius = 5
         return label
     }()
-    var levelLabel = {
+    let levelLabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 13)
         label.textAlignment = .center
-        label.text = "lv1 ∙ 밥알 0개 ∙ 물방울 0개"
         label.textColor = Colors.text
         return label
     }()
-    var mealTextField = {
+    let mealTextField = {
         let tf = UITextField()
-        tf.borderStyle = .roundedRect
+        tf.borderStyle = .none
         tf.placeholder = "밥주세용"
         tf.keyboardType = .numberPad
+        tf.backgroundColor = .clear
+        tf.textColor = Colors.text
+        tf.textAlignment = .center
+        tf.setPlaceholder(color: .gray)
         return tf
     }()
-    var feedButton = {
+    let feedButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "drop.circle"), for: .normal)
         button.setTitle("밥먹기", for: .normal)
@@ -72,14 +76,18 @@ class MainViewController: UIViewController {
         button.addTarget(self, action: #selector(feedButtonTapped), for: .touchUpInside)
         return button
     }()
-    var waterTextField = {
+    let waterTextField = {
         let tf = UITextField()
-        tf.borderStyle = .roundedRect
+        tf.borderStyle = .none
         tf.placeholder = "물주세용"
         tf.keyboardType = .numberPad
+        tf.backgroundColor = .clear
+        tf.textColor = Colors.text
+        tf.textAlignment = .center
+        tf.setPlaceholder(color: .gray)
         return tf
     }()
-    var wateredButton = {
+    let wateredButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "leaf.circle"), for: .normal)
         button.setTitle("물먹기", for: .normal)
@@ -93,41 +101,65 @@ class MainViewController: UIViewController {
         return button
     }()
     
-    let dataManager = DataManager.shared
+    private var meal:Double = 0
+    private var water:Double = 0
+    
+    private let dataManager = DataManager.shared
     
     var data:TamagotchiModel?{
         didSet{
-            nameLabel.text = data?.name
-            mainImageView.image = UIImage(named: data!.imageName)
-            levelLabel.text = "\(data!.level) ∙ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
+            guard let data else { return }
+            nameLabel.text = data.name
+            mainImageView.image = UIImage(named: data.imageName)
+            levelLabel.text = "\(data.level) ∙ 밥알 \(Int(data.food.0))개 ∙ 물방울 \(Int(data.food.1))개"
+            meal = data.food.0
+            water = data.food.1
         }
     }
     
-    lazy var bubbleContents = [
-        "\(data!.name)님 좋은 하루 보내고 계신가요?",
-        "\(data!.name)님 밥알이 부족헤요",
-        "\(data!.name)님 목이 마르네요",
-        "\(data!.name)님 오늘은 왠지 좋은 일이 생길 것 같아요",
-        "\(data!.name)님 커피한잔 하고 싶어요",
-        "\(data!.name)님 침대에서 하루종일 누워 있을 수 있으면 얼마나 좋을까요?",
-        "\(data!.name)님 이러고 있을 시간 없어요",
+    private lazy var bubbleContents = [
+        "\(UserData.me.nickName)님 좋은 하루 보내고 계신가요?",
+        "\(UserData.me.nickName)님 밥알이 부족헤요",
+        "\(UserData.me.nickName)님 목이 마르네요",
+        "\(UserData.me.nickName)님 오늘은 왠지 좋은 일이 생길 것 같아요",
+        "\(UserData.me.nickName)님 커피한잔 하고 싶어요",
+        "\(UserData.me.nickName)님 침대에서 하루종일 누워 있을 수 있으면 얼마나 좋을까요?",
+        "\(UserData.me.nickName)님 이러고 있을 시간 없어요",
     ]
-    var meal:Double = 0
-    var water:Double = 0
+
     
+    // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
         configureHierarchy()
         configureLayout()
         configureUI()
+
     }
-    func configureHierarchy(){
+    
+    override func viewWillAppear(_ animated: Bool) {
+        title = "\(UserData.me.nickName)님의 다마고치"
+
+    }
+    
+    //텍스트필드 border bottom
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        mealTextField.setBorderBottom()
+        waterTextField.setBorderBottom()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+    
+    private func configureHierarchy(){
         [bubbleBackView, mainImageView, nameLabel, levelLabel, mealTextField, feedButton, waterTextField, wateredButton].forEach { view.addSubview($0) }
         bubbleBackView.addSubview(bubbleImageView)
         bubbleBackView.addSubview(bubbleLabel)
     }
-    func configureLayout(){
+    private func configureLayout(){
         bubbleBackView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(50)
             make.horizontalEdges.equalToSuperview().inset(80)
@@ -138,7 +170,7 @@ class MainViewController: UIViewController {
         }
         bubbleLabel.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview().inset(15)
-            make.bottom.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(28)
         }
         mainImageView.snp.makeConstraints { make in
             make.top.equalTo(bubbleBackView.snp.bottom)
@@ -178,16 +210,20 @@ class MainViewController: UIViewController {
             make.trailing.equalTo(-80)
         }
     }
-    func configureUI(){
+    private func configureUI(){
         view.backgroundColor = .white
         mealTextField.delegate = self
         waterTextField.delegate = self
+
     }
-    func configureNavigation(){
+    private func configureNavigation(){
             let setting = UIBarButtonItem(image: UIImage(systemName: "person.circle"), style: .plain, target: self, action: #selector(settingButtonClicked))
-            title = "대장님의 다마고치"
+            title = "\(UserData.me.nickName)님의 다마고치"
+            setting.tintColor = Colors.text
             navigationItem.rightBarButtonItem = setting
     }
+    
+
     
     @objc func feedButtonTapped(){
         guard let text = mealTextField.text else { return }
@@ -199,6 +235,7 @@ class MainViewController: UIViewController {
             bubbleLabel.text = bubbleContents.randomElement()
            if var data{
                 data.level = getLevel()
+                data.food = (meal, water)
                 dataManager.updateData(id: data.id, newTama: data)
             }
         }else if let num = Double(text), num < 100{
@@ -209,11 +246,12 @@ class MainViewController: UIViewController {
             bubbleLabel.text = bubbleContents.randomElement()
             if var data{
                  data.level = getLevel()
+                data.food = (meal, water)
                  dataManager.updateData(id: data.id, newTama: data)
              }
-        }else if let num = Double(text), num > 100{
+        }else if let num = Double(text), num >= 100{
             //숫자가 100이상 일때
-            let alert = UIAlertController(title: "100이하의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "100미만의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
             let confirm = UIAlertAction(title: "확인", style: .default){ _ in
                 self.mealTextField.text = ""
             }
@@ -233,6 +271,7 @@ class MainViewController: UIViewController {
             bubbleLabel.text = bubbleContents.randomElement()
             if var data{
                  data.level = getLevel()
+                 data.food = (meal, water)
                  dataManager.updateData(id: data.id, newTama: data)
              }
         }else if let num = Double(text), num < 50{
@@ -243,11 +282,12 @@ class MainViewController: UIViewController {
             bubbleLabel.text = bubbleContents.randomElement()
             if var data{
                  data.level = getLevel()
+                 data.food = (meal, water)
                  dataManager.updateData(id: data.id, newTama: data)
              }
-        }else if let num = Double(text), num > 50{
+        }else if let num = Double(text), num >= 50{
             //숫자가 50이상 일때
-            let alert = UIAlertController(title: "50이하의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "50미만의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
             let confirm = UIAlertAction(title: "확인", style: .default){ _ in
                 self.waterTextField.text = ""
             }
@@ -260,9 +300,10 @@ class MainViewController: UIViewController {
         print(#function)
         let vc = SettingViewController()
         navigationController?.pushViewController(vc, animated: true)
+        
     }
     
-    func getLevel() -> Tamagotchi.Level{
+    private func getLevel() -> Tamagotchi.Level{
         let grade = ( meal / 5 ) + ( water / 2 )
         guard let data else { return Tamagotchi.Level.LV1 }
         switch grade {

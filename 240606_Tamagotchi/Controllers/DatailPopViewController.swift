@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SnapKit
 
-class DatailPopViewController: UIViewController {
+final class DatailPopViewController: UIViewController {
 
     var data:TamagotchiModel?{
         didSet{
@@ -18,19 +19,20 @@ class DatailPopViewController: UIViewController {
         }
     }
     
-    var backView = {
+    
+    let backView = {
         let view = UIView()
         view.backgroundColor = .white
         view.layer.cornerRadius = 10
         view.clipsToBounds = true
         return view
     }()
-    var mainImageView = {
+    let mainImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFill
         return img
     }()
-    var nameLabel = {
+    let nameLabel = {
         let label = PaddingLabel()
         label.font = .boldSystemFont(ofSize: 14)
         label.textAlignment = .center
@@ -40,12 +42,12 @@ class DatailPopViewController: UIViewController {
         label.layer.cornerRadius = 5
         return label
     }()
-    var lineView = {
+    let lineView = {
         let view = UIView()
         view.backgroundColor = Colors.text
         return view
     }()
-    var captionLabel = {
+    let captionLabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13)
         label.textAlignment = .center
@@ -53,16 +55,16 @@ class DatailPopViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-    var cancelButton = {
+    let cancelButton = {
         let button = UIButton()
         button.setTitle("취소", for: .normal)
         button.setTitleColor(Colors.text, for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 14)
-        button.backgroundColor = Colors.backgroud
+        button.backgroundColor = Colors.background
         button.addTarget(self, action: #selector(cancelButtonClicked), for: .touchUpInside)
         return button
     }()
-    var startButton = {
+    let startButton = {
         let button = UIButton()
         button.setTitle("시작하기", for: .normal)
         button.setTitleColor(Colors.text, for: .normal)
@@ -71,13 +73,14 @@ class DatailPopViewController: UIViewController {
         return button
     }()
     
+    // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
         configureLayout()
         configureUI()
     }
-    func configureHierarchy(){
+    private func configureHierarchy(){
         view.addSubview(backView)
         backView.addSubview(mainImageView)
         backView.addSubview(nameLabel)
@@ -86,7 +89,7 @@ class DatailPopViewController: UIViewController {
         backView.addSubview(cancelButton)
         backView.addSubview(startButton)
     }
-    func configureLayout(){
+    private func configureLayout(){
         backView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.horizontalEdges.equalToSuperview().inset(35)
@@ -124,10 +127,11 @@ class DatailPopViewController: UIViewController {
         }
         
     }
-    func configureUI(){
+    private func configureUI(){
         view.backgroundColor = .black.withAlphaComponent(0.3)
     }
-    func setCaption(type:Tamagotchi.TgType) -> String{
+    
+    private func setCaption(type:Tamagotchi.TgType) -> String{
         switch type {
         case .first:
             return "저는 선인장 다마고치입니다.\n키는 2cm, 몸무게는 150g이에요.\n성격은 소심하지만 마음은 따뜻해요.\n열심히 잘 먹고 잘 클 자신은 있답니다.\n반가워요 주인님!"
@@ -144,14 +148,14 @@ class DatailPopViewController: UIViewController {
     @objc func cancelButtonClicked(){
         dismiss(animated: true)
     }
+    
     @objc func startButtonClicked(){
         let vc = MainViewController()
         vc.data = self.data
         let navVC = UINavigationController(rootViewController: vc)
-        navVC.modalPresentationStyle = .fullScreen
-        navVC.modalTransitionStyle = .partialCurl
-        UserDefaults.standard.setValue(data?.id, forKey: UserDefault.selectedTama)
-        present(navVC, animated: true)
+        
+        UserData.me.seletedType = data?.type
+        (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootVC(navVC, animated: false)
     }
 
 }

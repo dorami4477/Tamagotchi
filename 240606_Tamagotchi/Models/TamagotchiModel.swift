@@ -15,7 +15,7 @@ enum Tamagotchi {
         case notReady
     }
     enum Level:Int{
-        case LV1 = 1, LV2, LV3, LV4,LV5, LV6, LV7, LV8, LV9, LV10
+        case LV1 = 1, LV2, LV3, LV4, LV5, LV6, LV7, LV8, LV9, LV10
     }
 }
 struct TamagotchiModel{
@@ -23,6 +23,7 @@ struct TamagotchiModel{
     let name:String
     let type:Tamagotchi.TgType
     var level:Tamagotchi.Level
+    var food:(Double, Double)
     
     static var idNumber: Int = 0
     
@@ -31,13 +32,18 @@ struct TamagotchiModel{
         self.name = name
         self.type = type
         self.level = .LV1
+        self.food = (0 , 0)
         
         TamagotchiModel.idNumber += 1
     }
     var imageName:String{
         switch type {
         case .first, .second, .third:
-            return "\(type.rawValue)-\(level.rawValue)"
+            if level == .LV10{
+                return "\(type.rawValue)-\(level.rawValue - 1)"
+            }else{
+                return "\(type.rawValue)-\(level.rawValue)"
+            }
         case .notReady:
             return "noImage"
             
@@ -78,10 +84,33 @@ final class DataManager{
     }
     
     func updateData(id:Int, newTama:TamagotchiModel){
-            var tama = tamaList.filter{ $0.id == id }.first
-            tama = newTama
-        print("\(tama!.level): \(tama!.imageName)")
-        
+            tamaList[id] = newTama
     }
     
+    func resetData(){
+        TamagotchiModel.idNumber = 0
+        
+        tamaList = [
+            TamagotchiModel(name: "따끔따끔 다마고치", type: .first),
+            TamagotchiModel(name: "방실방실 다마고치", type: .second),
+            TamagotchiModel(name: "반짝반짝 다마고치", type: .third),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+            TamagotchiModel(name: "준비중이에요", type: .notReady),
+        ]
+    }
 }
