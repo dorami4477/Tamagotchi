@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     
     let datas = DataManager.shared.getTamaList()
     
+    // MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
@@ -35,6 +36,11 @@ class ViewController: UIViewController {
         configureUI()
         configureDelegate()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        collectionView.reloadData()
+    }
+    
     func configureHierarchy(){
         view.addSubview(collectionView)
     }
@@ -56,6 +62,7 @@ class ViewController: UIViewController {
 
 }
 
+// MARK: - UICollectionView
 extension ViewController:UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return datas.count

@@ -24,7 +24,8 @@ class MainViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 14)
         label.textAlignment = .center
         label.textColor = Colors.text
-        label.text = "온릉ㄴ 왠지 기분이 좋아요"
+        label.numberOfLines = 0
+        label.text = "오늘은 왠지 기분이 좋아요"
         return label
     }()
     var mainImageView = {
@@ -47,7 +48,7 @@ class MainViewController: UIViewController {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 13)
         label.textAlignment = .center
-        label.text = "lv1 . 밥알 0개 , 물방울 0개"
+        label.text = "lv1 ∙ 밥알 0개 ∙ 물방울 0개"
         label.textColor = Colors.text
         return label
     }()
@@ -98,10 +99,19 @@ class MainViewController: UIViewController {
         didSet{
             nameLabel.text = data?.name
             mainImageView.image = UIImage(named: data!.imageName)
-            levelLabel.text = "\(data!.level)+ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
+            levelLabel.text = "\(data!.level) ∙ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
         }
     }
     
+    lazy var bubbleContents = [
+        "\(data!.name)님 좋은 하루 보내고 계신가요?",
+        "\(data!.name)님 밥알이 부족헤요",
+        "\(data!.name)님 목이 마르네요",
+        "\(data!.name)님 오늘은 왠지 좋은 일이 생길 것 같아요",
+        "\(data!.name)님 커피한잔 하고 싶어요",
+        "\(data!.name)님 침대에서 하루종일 누워 있을 수 있으면 얼마나 좋을까요?",
+        "\(data!.name)님 이러고 있을 시간 없어요",
+    ]
     var meal:Double = 0
     var water:Double = 0
     
@@ -127,7 +137,7 @@ class MainViewController: UIViewController {
             make.edges.equalToSuperview()
         }
         bubbleLabel.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()
+            make.top.horizontalEdges.equalToSuperview().inset(15)
             make.bottom.equalToSuperview().inset(16)
         }
         mainImageView.snp.makeConstraints { make in
@@ -184,9 +194,9 @@ class MainViewController: UIViewController {
         if text == ""{
             //텍스트필드가 비었을때
             meal += 1
-            levelLabel.text = "\(getLevel())+ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
+            levelLabel.text = "\(getLevel()) ∙ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
             mealTextField.text = ""
-
+            bubbleLabel.text = bubbleContents.randomElement()
            if var data{
                 data.level = getLevel()
                 dataManager.updateData(id: data.id, newTama: data)
@@ -194,8 +204,13 @@ class MainViewController: UIViewController {
         }else if let num = Double(text), num < 100{
             //숫자가 100미만 일때
             meal += num
-            levelLabel.text = "\(getLevel())+ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
-            return
+            levelLabel.text = "\(getLevel()) ∙ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
+            mealTextField.text = ""
+            bubbleLabel.text = bubbleContents.randomElement()
+            if var data{
+                 data.level = getLevel()
+                 dataManager.updateData(id: data.id, newTama: data)
+             }
         }else if let num = Double(text), num > 100{
             //숫자가 100이상 일때
             let alert = UIAlertController(title: "100이하의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
@@ -209,21 +224,30 @@ class MainViewController: UIViewController {
     }
     
     @objc func wateredButtonTapped(){
-        guard let text = mealTextField.text else { return }
+        guard let text = waterTextField.text else { return }
         if text == ""{
             //텍스트필드가 비었을때
             water += 1
-            levelLabel.text = "\(getLevel())+ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
+            levelLabel.text = "\(getLevel()) ∙ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
             waterTextField.text = ""
-            
+            bubbleLabel.text = bubbleContents.randomElement()
+            if var data{
+                 data.level = getLevel()
+                 dataManager.updateData(id: data.id, newTama: data)
+             }
         }else if let num = Double(text), num < 50{
             //숫자가 50미만 일때
             water += num
-            levelLabel.text = "\(getLevel())+ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
-            return
+            levelLabel.text = "\(getLevel()) ∙ 밥알 \(Int(meal))개 ∙ 물방울 \(Int(water))개"
+            waterTextField.text = ""
+            bubbleLabel.text = bubbleContents.randomElement()
+            if var data{
+                 data.level = getLevel()
+                 dataManager.updateData(id: data.id, newTama: data)
+             }
         }else if let num = Double(text), num > 50{
             //숫자가 50이상 일때
-            let alert = UIAlertController(title: "100이하의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "50이하의 숫자만 입력해주세요.", message: nil, preferredStyle: .alert)
             let confirm = UIAlertAction(title: "확인", style: .default){ _ in
                 self.waterTextField.text = ""
             }
@@ -234,6 +258,8 @@ class MainViewController: UIViewController {
     
     @objc func settingButtonClicked(){
         print(#function)
+        let vc = SettingViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func getLevel() -> Tamagotchi.Level{
@@ -271,7 +297,7 @@ class MainViewController: UIViewController {
             mainImageView.image = UIImage(named: "\(data.type.rawValue)-9")
             return Tamagotchi.Level.LV9
         case 100...:
-            mainImageView.image = UIImage(named: "\(data.type.rawValue)-10")
+            mainImageView.image = UIImage(named: "\(data.type.rawValue)-9")
             return Tamagotchi.Level.LV10
         default:
             return Tamagotchi.Level.LV1

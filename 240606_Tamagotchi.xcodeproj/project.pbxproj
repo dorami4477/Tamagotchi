@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4827696F2C12C3D700FA0753 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4827696E2C12C3D700FA0753 /* SettingViewController.swift */; };
+		482769712C12C55100FA0753 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482769702C12C55100FA0753 /* SettingCell.swift */; };
+		482769732C12D0F700FA0753 /* SetNameCellViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482769722C12D0F700FA0753 /* SetNameCellViewController.swift */; };
 		4852874D2C1158500007BA34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4852874C2C1158500007BA34 /* AppDelegate.swift */; };
 		4852874F2C1158500007BA34 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4852874E2C1158500007BA34 /* SceneDelegate.swift */; };
 		485287512C1158500007BA34 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 485287502C1158500007BA34 /* ViewController.swift */; };
@@ -24,6 +27,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4827696E2C12C3D700FA0753 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		482769702C12C55100FA0753 /* SettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
+		482769722C12D0F700FA0753 /* SetNameCellViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNameCellViewController.swift; sourceTree = "<group>"; };
 		485287492C1158500007BA34 /* 240606_Tamagotchi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 240606_Tamagotchi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4852874C2C1158500007BA34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4852874E2C1158500007BA34 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -102,6 +108,8 @@
 				485287502C1158500007BA34 /* ViewController.swift */,
 				485287702C1170F40007BA34 /* DatailPopViewController.swift */,
 				485287722C1180C10007BA34 /* MainViewController.swift */,
+				4827696E2C12C3D700FA0753 /* SettingViewController.swift */,
+				482769722C12D0F700FA0753 /* SetNameCellViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -110,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				485287652C115BB00007BA34 /* ListCell.swift */,
+				482769702C12C55100FA0753 /* SettingCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -200,6 +209,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				485287752C1185300007BA34 /* UILabel.swift in Sources */,
+				4827696F2C12C3D700FA0753 /* SettingViewController.swift in Sources */,
+				482769712C12C55100FA0753 /* SettingCell.swift in Sources */,
 				485287512C1158500007BA34 /* ViewController.swift in Sources */,
 				485287662C115BB00007BA34 /* ListCell.swift in Sources */,
 				4852874D2C1158500007BA34 /* AppDelegate.swift in Sources */,
@@ -207,6 +218,7 @@
 				4852874F2C1158500007BA34 /* SceneDelegate.swift in Sources */,
 				485287712C1170F40007BA34 /* DatailPopViewController.swift in Sources */,
 				485287732C1180C10007BA34 /* MainViewController.swift in Sources */,
+				482769732C12D0F700FA0753 /* SetNameCellViewController.swift in Sources */,
 				4852876F2C11681F0007BA34 /* TamagotchiModel.swift in Sources */,
 				4852876D2C1163A30007BA34 /* Constant.swift in Sources */,
 			);

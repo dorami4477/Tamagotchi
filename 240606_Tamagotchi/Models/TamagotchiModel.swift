@@ -24,12 +24,15 @@ struct TamagotchiModel{
     let type:Tamagotchi.TgType
     var level:Tamagotchi.Level
     
+    static var idNumber: Int = 0
+    
     init(name: String, type: Tamagotchi.TgType) {
-        self.id = 0
+        self.id = TamagotchiModel.idNumber
         self.name = name
         self.type = type
         self.level = .LV1
-        self.id += 1
+        
+        TamagotchiModel.idNumber += 1
     }
     var imageName:String{
         switch type {
@@ -77,7 +80,7 @@ final class DataManager{
     func updateData(id:Int, newTama:TamagotchiModel){
             var tama = tamaList.filter{ $0.id == id }.first
             tama = newTama
-            print(String(describing: tama?.id))
+        print("\(tama!.level): \(tama!.imageName)")
         
     }
     
